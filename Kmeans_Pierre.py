@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import matplotlib.colors as mcolors
 import pandas as pd
 
 def kmeans(X, k, num_iterations):
@@ -50,7 +51,7 @@ def kmeans2(X, k, num_iterations):
 
 (x_train,y_train),(x_test, y_test) = tf.keras.datasets.mnist.load_data()
 x_train2 = np.array([x.flatten() for x in x_train])
-X = tf.constant(x_train2)
+#X = tf.constant(x_train2)
 
 
 k = 10
@@ -66,34 +67,34 @@ print("Assignments:")
 print(assignments)
 
 
-df = pd.DataFrame({"class":assignments, "label":y_train})
-df = df.groupby("class")["label"].apply(list)
-for i in range(len(df)):
-    vecteur = df[i]  # Obtenir le vecteur de la colonne "label"
-    positions = range(len(vecteur))  # Positions des barres
-    plt.bar(vecteur, positions)  # Tracer le diagramme en barres
 
-    # Étiquettes des axes et titre
-    plt.xlabel('Index')
-    plt.ylabel('Valeurs')
-    plt.title(f'Diagramme en barres - Classe {i}')
+# Exemple de données de clusters prédits et de classes réelles
+clusters_predits = assignments
+classes_reelles = y_train
 
-    # Afficher le diagramme en barres
-    plt.show()
+# Compter les occurrences de chaque paire (cluster, classe)
+occurrences = {}
+for cluster, classe in zip(clusters_predits, classes_reelles):
+    key = (cluster, classe)
+    occurrences[key] = occurrences.get(key, 0) + 1
 
+# Préparer les données pour le bar plot
+categories = list(set(clusters_predits))
+valeurs = [occurrences.get((cluster, classe), 0) for cluster in categories for classe in np.arange(k)]
 
-# Tracer le diagramme en barres
-plt.bar(df.index, df.values)
+# Générer une liste de couleurs pour chaque classe
+couleurs_classes = list(mcolors.TABLEAU_COLORS.values())[:k]  # Génère k couleurs
+
+# Tracer le bar plot avec les couleurs des classes
+plt.bar(range(len(valeurs)), valeurs, color=couleurs_classes)
 
 # Étiquettes des axes et titre
-plt.xlabel('Éléments')
+plt.xlabel('Cluster')
 plt.ylabel('Occurrences')
-plt.title('Diagramme en barres des occurrences')
+plt.title('Correspondance entre clusters prédits et classes réelles')
 
-# Afficher le diagramme en barres
+
+# Afficher le bar plot
 plt.show()
-
-
-
 
 
