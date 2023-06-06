@@ -16,11 +16,11 @@ plt.imshow(x_train[0], cmap="gray")
 def autoencoder(input_shape):
   input = keras.Input(shape=input_shape)
   f = keras.layers.Flatten()(input)
-  e = keras.layers.Dense(256,activation="relu")(f)
-  e = keras.layers.Dense(128,activation="relu")(e)
-  lat_space = keras.layers.Dense(3, activation="relu")(e)
-  d = keras.layers.Dense(128, activation="relu")(lat_space)
-  d = keras.layers.Dense(256, activation="relu")(d)
+  e = keras.layers.Dense(256,activation="sigmoid")(f)
+  e = keras.layers.Dense(128,activation="sigmoid")(e)
+  lat_space = keras.layers.Dense(2, activation="sigmoid")(e)
+  d = keras.layers.Dense(128, activation="sigmoid")(lat_space)
+  d = keras.layers.Dense(256, activation="sigmoid")(d)
   regen = keras.layers.Dense(input_shape[0] * input_shape[1], activation="sigmoid")(d)
   reshaped = keras.layers.Reshape((28,28))(regen)
 
@@ -40,7 +40,7 @@ encoded = np.array(encoder(x_test))
 #3D plot
 x = encoded[:,0]
 y = encoded[:,1]
-z = encoded[:,2]
+#z = encoded[:,2]
 
 
 
@@ -51,10 +51,30 @@ colors = list(mcolors.TABLEAU_COLORS.values())[:count]
 
 # Création du scatter plot en 3D avec des couleurs différentes pour chaque catégorie
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.scatter(x, y, z, c=y_test, cmap=plt.cm.get_cmap('viridis', len(colors)), s=1)
+ax = fig.add_subplot(111)#, projection='3d')
+ax.scatter(x, y, c=y_test, cmap=plt.cm.get_cmap('viridis', len(colors)), s=1)
 
 # Affichage du plot
 plt.show(interactive=True)
 
 
+
+def generate_images(decoder):
+  images = []
+  for i in np.arange(0, 1, 0.1):
+    for j in np.arange(0, 1, 0.1):
+      latent_vector = np.array([[i, j]])
+      generated_image = decoder.predict(latent_vector)
+      images.append(generated_image.reshape(28, 28))
+
+  fig, axes = plt.subplots(10, 10, figsize=(10, 10))
+  fig.subplots_adjust(hspace=0.5, wspace=0.5)
+
+  for i, ax in enumerate(axes.flat):
+    ax.imshow(images[i], cmap='gray')
+    ax.axis('off')
+    ax.set_title(f"i={i / 10:.1f}, j={i % 10 / 10:.1f}")
+
+  plt.show()
+
+generate_images(decoder)
