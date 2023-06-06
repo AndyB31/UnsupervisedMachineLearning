@@ -54,7 +54,7 @@ x_train2 = np.array([x.flatten() for x in x_train])
 #X = tf.constant(x_train2)
 
 
-k = 10
+k = 30
 
 # Exécution de l'algorithme des k-means
 centers, assignments = kmeans(x_train2, k, num_iterations=100)
@@ -66,7 +66,7 @@ print(centers)
 print("Assignments:")
 print(assignments)
 
-
+#=============================
 
 # Exemple de données de clusters prédits et de classes réelles
 clusters_predits = assignments
@@ -93,6 +93,10 @@ plt.xlabel('Cluster')
 plt.ylabel('Occurrences')
 plt.title('Correspondance entre clusters prédits et classes réelles')
 
+
+# Ajouter des barres verticales toutes les 10 itérations
+for i in range(0, len(valeurs), 9):
+    plt.axvline(i, color='red', linestyle='--')
 
 # Afficher le bar plot
 plt.show()
