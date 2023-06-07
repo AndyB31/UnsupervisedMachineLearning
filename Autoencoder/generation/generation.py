@@ -11,7 +11,7 @@ import matplotlib.colors as mcolors
 x_train = x_train/255.0  # scales the data. pixel values range from 0 to 255, so this makes it range 0 to 1
 x_test = x_test/255.0  # scales the data. pixel values range from 0 to 255, so this makes it range 0 to 1
 
-plt.imshow(x_train[0], cmap="gray")
+#plt.imshow(x_train[0], cmap="gray")
 
 def autoencoder(input_shape):
   input = keras.Input(shape=input_shape)
@@ -55,7 +55,7 @@ ax = fig.add_subplot(111)#, projection='3d')
 ax.scatter(x, y, c=y_test, cmap=plt.cm.get_cmap('viridis', len(colors)), s=1)
 
 # Affichage du plot
-plt.show(interactive=True)
+plt.show()#interactive=True)
 
 
 
